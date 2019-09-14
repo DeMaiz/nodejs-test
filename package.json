@@ -1,0 +1,50 @@
+{
+   "name": "mikaelslab-nodejs",
+   "version": "1.0.0",
+   "description": "Mikaelslab-NodeJS",
+   "devDependencies": {
+      "@types/jest": "^24.0.13",
+      "@types/node": "^8.0.29",
+      "@types/jsonwebtoken": "^8.3.2",
+      "@typescript-eslint/eslint-plugin": "^1.9.0",
+      "@typescript-eslint/parser": "^1.9.0",
+      "eslint": "^5.16.0",
+      "jest": "^24.8.0",
+      "supertest": "^4.0.2",
+      "ts-jest": "^24.0.2",
+      "ts-node": "3.3.0",
+      "typescript": "3.3.3333",
+      "ts-node-dev": "^1.0.0-pre.39",
+      "swagger-jsdoc": "^3.2.9",
+      "swagger-ui-express": "^4.0.6"
+   },
+   "dependencies": {
+      "bcryptjs": "^2.4.3",
+      "body-parser": "^1.18.1",
+      "class-validator": "^0.9.1",
+      "cors": "^2.8.5",
+      "cross-env": "^5.2.0",
+      "ejs": "^2.7.1",
+      "express": "^4.15.4",
+      "helmet": "^3.18.0",
+      "jsonwebtoken": "^8.5.1",
+      "morgan": "^1.9.1",
+      "pg": "^7.11.0",
+      "reflect-metadata": "^0.1.10",
+      "typeorm": "0.2.17"
+   },
+   "scripts": {
+      "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/lib/server.ts",
+      "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
+      "debug": "cross-env TZ=UTC NODE_ENV=development tsnd --inspect --respawn ./src/lib/server.ts",
+      "pretest": "eslint src/**/*.ts",
+      "test": "cross-env NODE_ENV=test jest",
+      "build": "tsc",
+      "swagger:generate": "./node_modules/swagger-jsdoc/bin/swagger-jsdoc.js -d swaggerDef.js src/controllers/*.ts"
+   },
+   "jest": {
+      "transform": {
+         "^.+\\.tsx?$": "ts-jest"
+      }
+   }
+}
