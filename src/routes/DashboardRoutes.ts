@@ -1,10 +1,17 @@
 import { BaseRoutes } from './BaseRoutes';
 import { Request, Response } from "express";
 import { request } from 'https';
+import { resolve } from 'dns';
+const multer = require('../middlewares/multer');
+
+import {InvoiceService} from '../services/InvoiceService';
+import { Invoice } from '../entities/Invoice';
 
 export class DashboardRoutes extends BaseRoutes {
+    private invoiceService: InvoiceService;
     public constructor() {
         super();
+        this.invoiceService = new InvoiceService();
         this.routes();
     }
 
@@ -20,39 +27,49 @@ export class DashboardRoutes extends BaseRoutes {
                 this.layout(response,data);
             });
         });
-        this.router.get('/upload',(request: Request, response: Response )=>{
-            response.send('<h1>Upload page</h1>')
+        this.router.post('/invoice/upload',multer.single('invoice_csv'),async (req :Request, res: Response)=>{
+            let file = req.file;
+            const invoice = new InvoiceService();
+            try {
+                let invoiceData :any= await invoice.upload(file);
+                for(let i=0; i < invoiceData.length; i++){
+                    let row = invoiceData[i];
+                    await this.invoiceService.create(row)
+                }
+                res.send(invoiceData);
+            } catch (error) {
+                console.log(error);
+                res.send(error);
+            }
+            
         });
-        this.router.get('/invoices',(request: Request, response: Response )=>{
-            response.send('<h1>Upload page</h1>')
+        this.router.get('/invoice/upload',(request: Request, response: Response )=>{
+            this.render(response,'upload',{},(result)=>{
+                let data = {
+                    content : ''
+                }
+                if(result && result.status){
+                        data.content = result.html ;
+                }
+                this.layout(response,data);
+            });
         });
-    }
-
-    private layout(response: Response, data ={}): string {
-
-        return response.render('layout/index',data);
-    }
-
-    public notFound(response: Response):void {
-        // this.render(response,'404');
-    }
-
-    public render(response: Response, name: string, data ={},callback):object {
-        response.render(name, data, (err,html)=>{
-            if(err){
-                console.log('error', err);
-                return callback({
-                    status: false
+        this.router.get('/invoice/list',async (request:Request,response:Response)=>{
+            try {
+                const user:Invoice[] = await this.invoiceService.getAll();
+                response.status(201).send({
+                    status:true,
+                    message: "Invoices data",
+                    data: user
                 });
-            }else{
-                return callback({
-                    status: true,
-                    html,
-                })
+            } catch (error) {
+                response.status(404).send({
+                    status: false,
+                    error,
+                    data:[]
+                });
             }
         });
-        return
     }
-
 
 }

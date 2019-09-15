@@ -33,3 +33,18 @@ The real-life file includes five thousand rows and includes invalid rows.
 
 3. Customer can check invoices uploaded to the system and check their selling price.
 4. Customer can get upload report and understand errors related to CSV file row processing.
+
+# Soluction / Test
+1. Git clone the repo.
+2. npm i . 
+3. Set the postgress configuration in ormconfig.json.
+4. To run `npm run start`.
+
+# Plugins
+1. Yeomen generator using expres,typeorm with postgres, Mocha, Swagger & more.
+2. Multer for file upload, moment for date, csv_parse for csv, @hapi/Joi for validation on both end.
+3. Sample csv data file in uploads folder name "TestData.csv" contains 100 records generated form https://www.generatedata.com.
+4. SB Admin 2 used as a template placed in public folder.
+
+# Note 
+No additional unit test cases were written.
